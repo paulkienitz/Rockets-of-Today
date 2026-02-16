@@ -1,0 +1,4 @@
+DirectoryIndex index.php
+# the root-relative path within the overall website:
+FallbackResource /rockets/index.php
+Options -Indexes
