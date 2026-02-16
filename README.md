@@ -3,7 +3,8 @@
 This is the PHP source code for a portion of my personal website which is called Rockets of Today, which contains articles about rockets and spacecraft.
 Similarly to my other website, Cape Jeer, I am releasing the PHP and JS source code without releasing any of the article content of the live site.
 This is a simpler implementation than Cape Jeer, using only a single PHP file.
-That file exists in two versions, one being where I test new features before moving them to the prod version.
+(That file exists in two versions, one being where I test new features before moving them to the prod version.)
+
 The site’s implementation changed over the years, with early versions being implemented using SHTML, and rendering as a single tall page with openable subsections.
 The current version is grouped into chronological sections, with articles within each section being selectable by a tabbed UI.
 The tabs can use my SPARE library to swap content via AJAX, but have fallbacks for traditional navigation.
