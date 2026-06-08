@@ -94,8 +94,8 @@ $articleFolder = $mainSection == 'v' || $mainSection == 'h' ? 's/' : "r$mainSect
    These arrays could be local to eraToUse(), I guess — we only need the one it returns. */
 $eraOld       = ['' => 'Overview', 'soyuz' => 'R7/Soyuz', 'atlas' => 'Atlas', 'delta' => 'Delta',
                  'proton' => 'Proton', 'oldlongmarch' => 'Long March (old)'];
-$eraMiddle    = ['' => 'Overview', 'ariane' => 'Ariane', 'zenit' => 'Zenit (Irtysh, Yenisei)', 'h' => 'H',
-                 'shavit' => 'Shavit', 'pegasus' => 'Pegasus', 'pslv' => 'PSLV, GSLV', 'start' => 'START',
+$eraMiddle    = ['' => 'Overview', 'ariane' => 'Ariane', 'zenit' => 'Zenit &amp; Soyuz-5', 'h' => 'H',
+                 'shavit' => 'Shavit', 'pegasus' => 'Pegasus', 'pslv' => 'PSLV, GSLV', /* 'start' => 'START', */
                  'minotaur' => 'Minotaur', 'rokot' => 'Rokot'];
 $eraRevival   = ['' => 'Overview', 'falcon' => 'Falcon', 'unha' => 'Safir, Unha, and successors',
                  'vega' => 'Vega', 'kslv' => 'KSLV/Naro/Nuri', 'antares' => 'Antares',
@@ -104,14 +104,16 @@ $eraRevival   = ['' => 'Overview', 'falcon' => 'Falcon', 'unha' => 'Safir, Unha,
 $eraBoom      = ['' => 'Overview', 'electron' => 'Electron', 'alpha' => 'Alpha',
                  'sslv' => 'SSLV', 'sls' => 'SLS', 'landspace' => 'LandSpace',
                  'terran' => 'Terran', 'tianlong' => 'Tianlong', 'starship' => 'Starship',
-                 'vulcan' => 'Vulcan', 'kairos' => 'Kairos', 'newglenn' => 'New Glenn',
-                 'spectrum' => 'Spectrum', 'eris' => 'Eris', 'hanbit' => 'Hanbit'];
+                 'vulcan' => 'Vulcan', 'newglenn' => 'New Glenn',
+                 // Those have shown they can orbit; now here are the ones that have launched but not orbited yet:
+                 'spectrum' => 'Spectrum', 'kinetica' => 'Lijian/Kinetica', 'kairos' => 'Kairos',
+                 'eris' => 'Eris', 'hanbit' => 'Hanbit'];
 $eraCancelled = ['' => 'Overview', 'vector' => 'Vector', 'phantomx' => 'Phantom Express',
                  'omega' => 'OmegA', 'launcherone' => 'LauncherOne', 'astra' => 'Astra',
-                 'skylon' => 'Skylon', 'rs1' => 'RS1',  // now the ones not officially cancelled:
+                 'skylon' => 'Skylon', 'rs1' => 'RS1', 'prime' => 'Prime',  // now the ones not officially cancelled:
                  'bloostar' => 'Bloostar', 'haas' => 'Haas', 'neptune' => 'Neptune'];
 $eraFuture    = ['' => 'Overview', 'rfa' => 'RFA', 'neutron' => 'Neutron', 'nova' => 'Nova',
-                 'dawn' => 'Dawn', 'skyrora' => 'Skyrora', 'prime' => 'Prime', 'nebula' => 'Nebula',
+                 'dawn' => 'Dawn', 'skyrora' => 'Skyrora', 'nebula' => 'Nebula',
                  'newline' => 'New Line', 'miura' => 'Miura', 'spinlaunch' => 'SpinLaunch',
                  'bluewhale' => 'Blue Whale', 'hapith' => 'Hapith'];
 $eraVessels   = ['' => 'Overview', 'soyuz' => 'Soyuz', 'shenzhou' => 'Shenzhou', 'dragon' => 'Dragon',
@@ -124,11 +126,11 @@ $eraStations  = ['' => 'Overview', 'iss' => 'ISS', 'tiangong' => 'Tiangong', 'ga
 //$privateMap = ['pegasus' => 'm', 'minotaur' => 'm', 'falcon' => 'r', 'antares' => 'r', 'electron' => 'b',
 //               'astra' => 'x', 'alpha' => 'b', 'landspace' => 'b', 'rs1' => 'x', 'terran' => 'b',
 //               'tianlong' => 'b', 'starship' => 'b', 'neptune' => 'x', 'vulcan' => 'b', 'newglenn' => 'b',
-//               'spectrum' => 'b', 'rfa' => 'f', 'dawn' => 'f', 'prime' => 'f', 'nebula' => 'f', 'nova' => 'f',
+//               'spectrum' => 'b', 'rfa' => 'f', 'dawn' => 'f', 'prime' => 'x', 'nebula' => 'f', 'nova' => 'f',
 //               'neutron' => 'f', 'newline' => 'f', 'miura' => 'f', 'bluewhale' => 'f', 'hapith' => 'f',
 //               'eris' => 'b', 'haas' => 'x', 'bloostar' => 'x', 'skylon' => 'x', 'vector' => 'x', 'omega' => 'x',
 //               'launcherone' => 'x', 'dragon' => 'v', 'starliner' => 'v', 'bluemoon' => 'v', /*'starship' => 'v',*/
-//               'dreamchaser' => 'v', 'axiom' => 'h', 'hanbit' => 'b'];
+//               'dreamchaser' => 'v', 'axiom' => 'h', 'hanbit' => 'b', 'kinetica' => 'b'];
 
 function eraToUse($mainSection)
 {
@@ -250,7 +252,7 @@ else if ($show404)
         }
         exit(0);
     } else {
-        $pageTitle = 'page not found';
+        $pageTitle = '404 Not Found';
         http_response_code(404);
     }
 }
@@ -287,7 +289,7 @@ $filterClasses = ['o/soyuz'         => 'rus medium astro cryo gov commz spend po
                   'm/shavit'        => 'israel light sat solid gov nocomm spend rare',
                   'm/pegasus'       => 'usa light sat solid comm spend rare',
                   'm/pslv'          => 'india medium sat solid commz spend pop',
-                  'm/start'         => 'rus light sat solid gov nocomm spend rare',
+               /* 'm/start'         => 'rus light sat solid gov nocomm spend rare', */
                   'm/minotaur'      => 'usa light sat solid comm spend rare',
                   'm/rokot'         => 'rus light sat golic gov commz spend rare',
                   'r/falcon'        => 'usa heavy astro cryo comm reuse pop',
@@ -306,7 +308,7 @@ $filterClasses = ['o/soyuz'         => 'rus medium astro cryo gov commz spend po
                   'b/sls'           => 'usa superheavy brave cryo gov nocomm spend rare',
                   'b/landspace'     => 'china light medium sat cryo comm spend rare',
                   'b/terran'        => 'usa light sat cryo comm spend rare',
-                  'b/tianlong'      => 'china light sat cryo comm reuse rare',
+                  'b/tianlong'      => 'china light medium sat cryo comm reuse rare',
                   'b/starship'      => 'usa superheavy brave cryo comm reuse rare',
                   'b/vulcan'        => 'usa medium heavy brave cryo comm reuse rare',
                   'b/kairos'        => 'japan light sat solid comm spend rare',
@@ -314,6 +316,7 @@ $filterClasses = ['o/soyuz'         => 'rus medium astro cryo gov commz spend po
                   'b/spectrum'      => 'germany light sat cryo comm spend rare',
                   'b/eris'          => 'australia light sat solid comm spend rare',
                   'b/hanbit'        => 'southkorea light sat solid comm spend rare',
+				  'b/kinetica'      => 'china light medium sat cryo comm spend rare',
                   'x/vector'        => 'usa light sat cryo comm spend rare',
                   'x/phantomx'      => 'usa light sat cryo gov nocomm reuse rare',
                   'x/omega'         => 'usa medium heavy sat solid comm spend rare',
@@ -321,6 +324,7 @@ $filterClasses = ['o/soyuz'         => 'rus medium astro cryo gov commz spend po
                   'x/astra'         => 'usa light sat cryo comm spend pop',
                   'x/skylon'        => 'britain medium brave cryo comm reuse rare',
                   'x/rs1'           => 'usa light sat cryo comm spend rare',
+                  'x/prime'         => 'britain light sat cryo comm reuse rare',
                   'x/bloostar'      => 'spain light sat cryo comm reuse rare',
                   'x/haas'          => 'romania usa light sat golic comm spend rare',
                   'x/neptune'       => 'usa light sat golic comm spend rare',
@@ -329,7 +333,6 @@ $filterClasses = ['o/soyuz'         => 'rus medium astro cryo gov commz spend po
                   'f/nova'          => 'usa medium sat cryo comm reuse rare',
                   'f/dawn'          => 'newzealand germany nether light sat golic comm reuse rare',
                   'f/skyrora'       => 'britain light sat golic comm spend rare',
-                  'f/prime'         => 'britain light sat cryo comm reuse rare',
                   'f/nebula'        => 'china light sat cryo comm spend rare',
                   'f/newline'       => 'china light sat cryo comm reuse rare',
                   'f/miura'         => 'spain light sat cryo comm reuse rare',
@@ -385,22 +388,22 @@ function listFilteredArticles($mainSectionsToInclude)
 
 // ======================== MARKUP BEGINS HERE:
 ?><!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <?php
 if (!$redirection && $mainSection !== 'sitemap.txt')
 {
 ?>
     <title>Rockets of Today<?= $warning?> — <?= $pageTitle ?></title>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />  <!-- fallback for future.css -->
-    <meta name="Author" content="Paul Kienitz">
-    <meta name="Keywords" content="rocket, rockets, booster, orbit, space, spacex, falcon, blue origin, new glenn, phantom express, ariane, long march, angara, skylon, starship, Paul Kienitz, Kienitz, future, science, <?= $pageTitle ?>">
-    <link rel='preconnect' href='https://fonts.googleapis.com'>
-    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Brygada+1918:ital,wght@0,400..700;1,400..700&family=Viga&display=swap'>
-    <link rel='stylesheet' type='text/css' href='/future/future.css'>
-    <link rel='stylesheet' type='text/css' href='<?=$rootM?>/rockets.css'>
+    <meta name="Author" content="Paul Kienitz" />
+    <meta name="Keywords" content="rocket, rockets, booster, orbit, space, spacex, falcon, blue origin, new glenn, phantom express, ariane, long march, angara, skylon, starship, Paul Kienitz, Kienitz, future, science, <?= $pageTitle ?>" />
+    <link rel='preconnect' href='https://fonts.googleapis.com' />
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Brygada+1918:ital,wght@0,400..700;1,400..700&family=Viga&display=swap' />
+    <link rel='stylesheet' href='/future/future.css' />
+    <link rel='stylesheet' href='<?=$rootM?>/rockets.css' />
     <link rel="icon" type="image/png" href="/rockets/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/rockets/favicon.svg" />
     <link rel="shortcut icon" href="/rockets/favicon.ico" />
@@ -412,9 +415,9 @@ if (!$redirection && $mainSection !== 'sitemap.txt')
     {
 ?>
     <link rel='canonical' href='<?=$canonical?>' />
-    <script type='text/javascript' src='<?=$rootM?>/rockets.js'></script>
-    <script type='text/javascript' src='<?=$rootM?>/spare05X_single2.js'></script>
-    <script type='text/javascript' src='<?=$rootM?>/rockets_nav.js'></script>
+    <script src='<?=$rootM?>/rockets.js'></script>
+    <script src='<?=$rootM?>/spare05X_single2.js'></script>
+    <script src='<?=$rootM?>/rockets_nav.js'></script>
 <?php
     // if we were to use hashover, we'd pull in its comments.css and comments.js here
     }
@@ -423,7 +426,7 @@ if (!$redirection && $mainSection !== 'sitemap.txt')
 <?php
     if ($eraToUse)
     {
-        echo("    <script type='text/javascript'>\n        var eraTitles = {\n");
+        echo("    <script>\n        var eraTitles = {\n");
         $oti = $sections[$sectionNumber][1];
         foreach ($eraToUse as $ar => $title)
             echo("            '$rootA/$mainSection/$ar': 'Rockets of Today — " . ($ar ? $title : $oti) . "',\n");
@@ -433,7 +436,7 @@ if (!$redirection && $mainSection !== 'sitemap.txt')
     }
 ?>
 
-    <script type='text/javascript'>
+    <script>
         var targetsR = {
 <?php
     foreach ($filterClasses as $path => $classy)
@@ -463,8 +466,9 @@ if (!$redirection && $mainSection !== 'sitemap.txt')
     if (!$show404)
     {
 ?>
-    <style type='text/css'>
+    <style>
         /* Temporary or experimental styles -- migrate good ones to rockets.css: */
+        main a[id] { scroll-margin-top: 2rem; }
     </style>
 <?php
     }
@@ -492,22 +496,24 @@ else
 <NAV class=filtration>
     <div class=popupParent>
         <button id=filterButton class=filterDropper>select filters
-            <img src='<?=$rootM?>/navarrow.svg' class='menuarrow'>
+            <img src='<?=$rootM?>/navarrow.svg' class='menuarrow' alt='show/hide filters'>
         </button>
-        <SECTION id=filterPopup class=inputPopup style="display: none">
+        <div id=filterPopup class=inputPopup style="display: none">
+
 <?php
             require 'filter.html-content';
             echo("\n<p class=summz>\n—&nbsp;<i>Rockets included with current filters:</i>");
             listFilteredArticles('omrbxf');
             echo("&nbsp;—\n</p>\n\n<p class=summz>\n—&nbsp;<i>Spacecraft and stations included with current filters:</i>");
             listFilteredArticles('vh');
-            echo("&nbsp;—\n<br/>\n(<i>Note that only the last three filters — reuse, commercialization, and country — apply to this group.</i>)\n</p>");
+            echo("&nbsp;—\n<br />\n(<i>Note that only the last three filters — reuse, commercialization, and country — apply to this group.</i>)\n</p>\n");
 ?>
-        </SECTION>
+
+        </div>
         <i>Currently selected:</i>
         <span id=filterlist>
         </span>
-    <div>
+    </div>
 </NAV>
 
 <NAV class="popupParent erae">
@@ -518,18 +524,18 @@ else
         $nextr = $sections[($sectionNumber + 1) % $sc]
 ?>
     <span class="eraselect left">
-        <?php echo("<a href='$rootA/$prior[0]'>$prior[2]&nbsp;<img src='$rootM/ffwd.svg' class='navarrow left'></a>\n"); ?>
+        <?php echo("<a href='$rootA/$prior[0]'>$prior[2]&nbsp;<img src='$rootM/ffwd.svg' class='navarrow left' alt='$prior[1]' /></a>\n"); ?>
     </span>
     <span class="eraselect center">
         <button id=mainSectionButton>
             <span class=narrow><?=$sections[$sectionNumber][2]?></span><span class=wide><?=$sections[$sectionNumber][1]?></span>
-            <img src='<?=$rootM?>/navarrow.svg' class='menuarrow'>
+            <img src='<?=$rootM?>/navarrow.svg' class='menuarrow' alt='show/hide list of sections'>
         </button>
     </span>
     <span class="eraselect right">
-        <?php echo("<a href='$rootA/$nextr[0]'><img src='$rootM/ffwd.svg' class='navarrow right'>&nbsp;$nextr[2]</a>\n"); ?>
+        <?php echo("<a href='$rootA/$nextr[0]'><img src='$rootM/ffwd.svg' class='navarrow right' alt='$nextr[1]' />&nbsp;$nextr[2]</a>\n"); ?>
     </span>
-    <SECTION id=mainSectionPopup class="inputPopup center20" style="display: none">
+    <div id=mainSectionPopup class="inputPopup center20" style="display: none">
 <?php
             foreach ($sections as $sec)   // section names form menu items in the dropdown
             {
@@ -539,7 +545,7 @@ else
                 echo("        <div class=menuItem><a href='$rootA/$sec[0]'>$name</a></div>\n");
             }
 ?>
-    </SECTION>
+    </div>
 </NAV>
 
 <?php
@@ -568,7 +574,7 @@ else
 <?php
     if ($show404)
     {
-        echo("<h1 style='color: #660000; font-family: initial;'>404 Page not found</h1>\n<p>");
+        echo("<h1 style='color: #660000; font-family: initial;'>404 Not Found</h1>\n<p>");
         echo(htmlspecialchars($reqPath));
         echo(" is not the URL of an article on this site.</p>\n");
         echo("<p><a href='$rootA'>Here is the index of content.</a></p>\n");
@@ -640,7 +646,7 @@ comments, like you would on a blog post.&ensp;Please be courteous to other visit
 <div id=topstripe style="visibility: hidden; top: -3em;">
     <div>
         <h1 class=maintitle>Rockets of Today<?= $warning?></h1>
-        <div id=topper><i>top</i>&nbsp;<!-- span id=knuth>&#8679;</span --><img src='<?= $rootM ?>/ffwd.svg' class=navarrow></div>
+        <div id=topper><i>top</i>&nbsp;<!-- span id=knuth>&#8679;</span --><img src='<?= $rootM ?>/ffwd.svg' class=navarrow alt='scroll to top' /></div>
         <h2 class=rocket>&ensp;— 
             <i id=sectioname style="display: <?= $article ? 'none' : 'inline' ?>"><?= strtolower($sections[$sectionNumber][1]) ?></i>
             <span id=rocketname style="display: <?= $article ? 'inline' : 'none' ?>"><?= $article ? $eraToUse[$articleBase] : '' ?></span>

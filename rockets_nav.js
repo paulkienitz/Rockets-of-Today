@@ -289,5 +289,6 @@ function scrollHandler(e)
     }       // those have timed transitions in CSS
 }
 
-window.addEventListener("scroll", scrollHandler);    // no scrollend event in Safari or Opera yet
+window.addEventListener("scroll", scrollHandler);   // no scrollend event in Safari or Opera yet
+window.addEventListener("load", scrollHandler);     // don't wait for a user input to get it right
 
