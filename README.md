@@ -18,7 +18,7 @@ Once I had shared the code to Cape Jeer, I decided to also make the PHP and othe
 Note that it includes only the code (and a stylesheet) — not any of the site content displayed by the code.
 If you run a local instance, you will get lots of broken links.
 Note also that the code can reference a comments feature, but does not incorporate it.
-You can license the commenting system I used at commentics.com.
+You can license the commenting system I used at [commentics.com](https://commentics.com/).
 
 The license is that the source code included here is freely usable without restriction.
 This permission does not extend to any content hosted by paulkienitz.net which is absent here.
