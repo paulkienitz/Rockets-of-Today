@@ -3,7 +3,7 @@
 This is the PHP source code for a portion of my personal website which is called Rockets of Today, which contains articles about rockets and spacecraft.
 The site in question is [here](https://paulkienitz.net/rockets).
 It contains articles about every modern rocket, whether as widely discussed as the [Starship](https://paulkienitz.net/rockets/b/starship) or as obscure as the Iranian [Zuljanah](https://paulkienitz.net/rockets/r/unha).
-It also covers spacecraft such as the [Starliner]([https://](https://paulkienitz.net/rockets/v/starliner) or the forthcoming [Gaganyaan](https://paulkienitz.net/rockets/v/gaganyaan).
+It also covers spacecraft such as the [Starliner](https://paulkienitz.net/rockets/v/starliner) or the forthcoming [Gaganyaan](https://paulkienitz.net/rockets/v/gaganyaan).
 Similarly to my other website, Cape Jeer, I am releasing the PHP and JS source code without releasing any of the article content of the live site.
 This is a simpler implementation than Cape Jeer, using only a single PHP file.
 (That file exists in two versions, one being where I test new features before moving them to the prod version.)
