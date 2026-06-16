@@ -1,7 +1,7 @@
 // The script rockets.js defines stuff used by both the old tall format and the
 // new navigable format.  This supplements it by defining things which are used
-// only in the new format.
-// We stuck to ECMAScript 3 originally; probably safe to use 6 now, certainly 5.
+// only in the new format.  Uses SPARE (https://github.com/paulkienitz/SPARE).
+// We stuck to ECMAScript 3 originally.  Nowadays 6 should be perfectly safe.
 
 
 // First, enhanced functionality for the filter form.
