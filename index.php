@@ -1,5 +1,6 @@
 <?php
 /*  TODO:   -- logic:
+******************  GOVT EXCLUSIVE FILTER IS BUSTED, it is including commercialized government.
 **BUG**  Tabbing to overview did not update "current filter" list to reflect filter change.
 (already saw)  Filter list on section intro pages sometimes initiates out of sync with the current filters?  Can't reproduce.
 Add formerly-popular filter category?  Maybe someday.  Or decommission the whole filter feature?
@@ -165,21 +166,25 @@ function sectionServerPath($section)
     }
 }
 
-function sitemapXmlRecord($url, $template, $pri)
+function lastModTimeISO($path)
 {
-    $modtime = new DateTime('@' . filemtime($template));
+    $modtime = new DateTime('@' . filemtime($path));
     $modtime->setTimezone(new DateTimeZone('UTC'));
-    $timestamp = $modtime->format(DateTime::ATOM);
-    echo "<url>\n  <loc>$url</loc>\n  <lastmod>$timestamp</lastmod>\n" .
+    return $modtime->format(DateTime::ATOM);
+}
+
+function sitemapXmlRecord($url, $source, $pri)
+{
+    echo "<url>\n  <loc>$url</loc>\n  <lastmod>" . lastModTimeISO($source) . "</lastmod>\n" .
          "  <priority>$pri</priority>\n  <changefreq>monthly</changefreq>\n</url>\n";
 }
 
 
 $eraToUse = null;
+$articleBase = $article;					// in test versions this may not be so simple
 if (!$show404)
 {
     $eraToUse = eraToUse($mainSection);
-    $articleBase = $article;
     $show404 = $article && (!$eraToUse || !in_array($articleBase, array_keys($eraToUse), true));
     // if ($articleBase !== $article) $log .= "\n*** articleBase '$articleBase' — " . ($show404 ? 'not found' : 'found');
     // if ($eraToUse) $log .= "\n*** size of eraToUse is " . count($eraToUse);
@@ -316,7 +321,7 @@ $filterClasses = ['o/soyuz'         => 'rus medium astro cryo gov commz spend po
                   'b/spectrum'      => 'germany light sat cryo comm spend rare',
                   'b/eris'          => 'australia light sat solid comm spend rare',
                   'b/hanbit'        => 'southkorea light sat solid comm spend rare',
-				  'b/kinetica'      => 'china light medium sat cryo comm spend rare',
+                  'b/kinetica'      => 'china light medium sat cryo comm spend rare',
                   'x/vector'        => 'usa light sat cryo comm spend rare',
                   'x/phantomx'      => 'usa light sat cryo gov nocomm reuse rare',
                   'x/omega'         => 'usa medium heavy sat solid comm spend rare',
@@ -516,7 +521,8 @@ else
     </div>
 </NAV>
 
-<NAV class="popupParent erae">
+<div itemscope itemtype="https://schema.org/BreadcrumbList">
+  <NAV class="popupParent erae">
     <!-- era selector -->
 <?php
         $sc = count($sections);
@@ -537,64 +543,82 @@ else
     </span>
     <div id=mainSectionPopup class="inputPopup center20" style="display: none">
 <?php
-            foreach ($sections as $sec)   // section names form menu items in the dropdown
-            {
-                $name = $sec[1];
-                if (eraToUse($sec[0]))
-                    $name = strtoupper($name) . " »";
-                echo("        <div class=menuItem><a href='$rootA/$sec[0]'>$name</a></div>\n");
-            }
+        foreach ($sections as $num => $sec)   // section names form menu items in the dropdown
+        {
+            $path = $num == 0 ? '' : $sec[0];
+            $name = $sec[1];
+            if (eraToUse($sec[0]))
+                $name = strtoupper($name) . " »";
+            $level = $num == 0 ? 1 : 2;
+            if ($num == 0 || $num == $sectionNumber)
+                echo("        <div class=menuItem itemprop=itemListElement itemscope itemtype='https://schema.org/ListItem'>" .
+                             "<meta itemprop=position content='$level'><meta itemprop=name content='$sec[1]'>" .
+                             "<a href='$rootA/$path' itemprop=item>$name</a></div>\n");
+            else
+                echo("        <div class=menuItem><a href='$rootA/$path'>$name</a></div>\n");
+        }
 ?>
     </div>
-</NAV>
+  </NAV>
 
 <?php
         if ($eraToUse)
         {
+            $itemy = $article ? " itemprop=itemListElement itemscope itemtype='https://schema.org/ListItem'" : '';
             // Tabs!  These are the links to the individual articles within the era.
-            echo("<NAV class='subtabby bigimage'><div><div id=tabset>&ensp;  <!-- for eras which have tabs for individual articles -->\n");
+            echo("  <NAV class='subtabby bigimage'>  <!-- for eras which have tabs for individual articles -->\n    <div$itemy><div id=tabset>&ensp;\n");
             foreach ($eraToUse as $item => $name)
             {
                 $articlePath = $mainSection . '/' . $item;
-                $sel = $item == $article ? ' selectedtab' : '';
-                $filter = $articlePath ? $filterClasses[$articlePath] ?? null : null;
-                echo("    <a class='articletab$sel $filter' href='$rootA/$articlePath'>$name</a>\n");
+                $sel = $item == $articleBase ? ' selectedtab' : '';
+                $itemy = $sel != '' && $item != '' ? " itemprop=item" : '';
+                if ($itemy)
+                    echo("        <meta itemprop=position content='3'><meta itemprop=name content='$name'>\n");
+                $filter = $article ? $filterClasses[$articlePath] ?? null : null;
+                echo("        <a class='articletab$sel $filter'$itemy href='$rootA/$articlePath'>$name</a>\n");
             }
-            echo("<span class=tabrejects>[<span id=rejectcount>0</span> hidden]</span>\n");
-            // The ensp's are for an old Firefox bug that didn't use all of the padding on the right of this scrollable region.
+            echo("        <span class=tabrejects>[<span id=rejectcount>0</span> hidden]</span>&ensp;\n");
+            // That ensp is for an old Firefox bug that didn't use all of the padding on the right of this scrollable region.
             // Even with actual content there instead of padding, it still allocates less space there than on the left,
             // but it's closer to symmetrical, so this partially mitigates the bug.  In Chrome it's symmetrical either way.
-            echo("\n&ensp;</div></div></NAV>\n");
+            echo("    </div></div>\n  </NAV>\n");
         } /* $eraToUse */
+?>
+</div>
+<?php
     } /* !$show404 */
 ?>
 
 <!-- ======================== SUBSTANTIVE NON-NAVIGATIONAL CONTENT GOES HERE: -->
-<MAIN id=mainContent>
+<MAIN id=mainContent itemscope itemtype="https://schema.org/Article">
+    <div style="display: none" itemprop=author itemscope itemtype="https://schema.org/Person"><meta itemprop=name content="Paul Kienitz"><meta itemprop=url content="https://paulkienitz.net/"></div>
+
 <?php
     if ($show404)
     {
-        echo("<h1 style='color: #660000; font-family: initial;'>404 Not Found</h1>\n<p>");
-        echo(htmlspecialchars($reqPath));
-        echo(" is not the URL of an article on this site.</p>\n");
-        echo("<p><a href='$rootA'>Here is the index of content.</a></p>\n");
+        echo("    <h1 style='color: #660000; font-family: initial;'>404 Not Found</h1>\n");
+        echo("    <p>" . htmlspecialchars($reqPath) . " is not the URL of an article on this site.</p>\n");
+        echo("    <p><a href='$rootA'>Here is the index of content.</a></p>\n");
     }
     else if ($article)
     {
+        echo("    <meta itemprop=dateModified content='" . lastModTimeISO($articleFolder . $article . '.html-content') . "'>\n");
         require $articleFolder . $article . '.html-content';
         $cmtx_identifier = $mainSection . '/' . $article;
         if ($commentSystem === 'inline')
         {
             $cmtx_reference = $pageTitle;
-            echo "<div class=commentation>";
+            echo "    <div class=commentation>";
             require($_SERVER['DOCUMENT_ROOT'] . $cmtx_folder . 'frontend/index.php');
-            echo '<div class=termination><a href="#" data-cmtx-target-modal="#cmtx_terms_modal">terms and conditions for commenters</a>';
+            echo '        <div class=termination><a href="#" data-cmtx-target-modal="#cmtx_terms_modal">terms and conditions for commenters</a>';
             echo '&emsp;|&emsp;<a href="#" data-cmtx-target-modal="#cmtx_privacy_modal">privacy policy</a></div>';
-            echo "\n</div>\n";
+            echo "\n    </div>\n";
         }
     }
     else
     {
+        echo("    <meta itemprop=dateModified content='" . lastModTimeISO(sectionServerPath($mainSection)) . "' />\n");
+		echo("    <meta itemprop=headline content='" . $sections[$sectionNumber][1] . "' />\n");
         if ($addIntro)
         {
             echo('<p class=narrowp>
@@ -606,7 +630,7 @@ and <a href="legend">Stats &amp; Specs</a> pages for further explanation.&ensp;I
 was formerly titled “Commercial Rockets”.
 </p><p class=narrowp>
 <i>New feature!</i>&ensp;The individual rocket articles now let you respond with
-comments, like you would on a blog post.&ensp;Please be courteous to other visitors.
+comments, like you would on a blog post.&ensp;Keep comments civil.
 </p>
 ');
         }

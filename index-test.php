@@ -1,11 +1,74 @@
 <?php
 /*  TODO:   -- logic:
+******************  GOVT EXCLUSIVE FILTER IS BUSTED, it is including commercialized government.
 **BUG**  Tabbing to overview did not update "current filter" list to reflect filter change.
 (already saw)  Filter list on section intro pages sometimes initiates out of sync with the current filters?  Can't reproduce.
 Add formerly-popular filter category?  Maybe someday.  Or decommission the whole filter feature?
 Reorganize .css file, and merge in local inline styles.  Remove .gov class?
 BUG: Firefox sometimes doesn't load images after simulateNavigation -- XHR handled cache incorrectly.
 ...See if spare 5 mitigates that bug (it probably should have no effect... but I haven't seen the bug in some time):
+
+**********************
+ARTICLES PRESENT in Sep 2021 (earliest definite record we have):
+    Alpha Angara/Amur Antares Ariane Astra Atlas Bloostar Blue-Whale [cargo]
+    [china-solids] Delta Dragon-2 Dream-Chaser Electron Epsilon Falcon
+    Gaganyaan GSLV/PSLV(incl LVM) H Haas Hapith ISS KSLV LauncherOne
+    Long-March LOP-G Mengzhou Minotaur Miura Nebula Neptune New-Glenn New-Line
+    Omega Orel Orion Pegasus Phantom-Express Prime Proton Rokot RS1 Shavit
+    Shenzhou Skylon SLS Soyuz Soyuz(spacecraft) SSLV Starliner Starship
+    Starship(spacecraft) Terran Tiangong-Space-Station Unha Vega Vector Vulcan
+    Zenit
+
+Have dated all of the following to 2017... this may or may not be valid, but I’m going with it... let’s say July just because it’s in the middle:
+    Alpha✔ Angara✔ Antares✔ Ariane✔ Atlas✔ Bloostar✔ [cargo]✔ [china-solids]✔
+    Delta✔ Electron✔ Epsilon✔ Falcon✔ GSLV/PSLV(incl LVM)✔ H✔ Haas✔
+    LauncherOne✔ Long-March✔✔ Minotaur✔ Neptune✔ New-Glenn✔ Pegasus✔
+    Phantom-Express✔ Prime✔ Proton✔ Rokot✔ RS1✔ Skylon✔ Soyuz✔ Starship✔
+    Vega✔ Vector✔ Vulcan✔ Zenit✔
+
+NOW, come up with some idea as for which rockets were added when in 2018-21.  Here are my best guesses:
+    Astra (nov 18)✔ Blue-Whale (oct 19)✔ Hapith (feb 20)✔ Miura (jan 18)✔ Nebula (aug 21)✔
+    Neutron (mar 21) New-Line (apr 19)✔ Omega (oct 18)✔ SSLV (feb 20)✔ Terran (oct 17)✔
+But now I have to try to figure when I added the noncommercialized ones... did any of these predate 2019 or so?  I really can’t remember...
+    KSLV (early?)✔ Phantom-Express (late?)✔ Shavit (early/middle?)✔ SLS (late?)✔ Unha (early?)✔
+And when did I start adding the spacecraft and space stations?  I’m thinking maybe 2020-ish?
+    Soyuz✔ Shenzhou✔ Dragon✔ Starliner✔ Orion✔ Mengzhou (later?)✔ Blue-Moon (much later, see below)✔
+    Starship (definitely later)✔ Dream-Chaser✔ Gaganyaan (later?)✔ Orel✔
+    ...ISS✔ Tiangong (later?)✔ LOP-G✔ Axiom (much later, see below)✔
+
+That’s the end of the guesswork.  From now on we have at least a rough record available of what was added when, with some firm boundary dates.
+The Wayback Machine goes back to Sep 17, 2021... maybe that’s when it was first made really visible to search engines etc, though it was not new.
+
+Added before Dec 1, 2021:  none
+Added before Apr 5, 2022:  (mostly a bunch of redundant company names in the index, which we can ignore)
+    Aurora/Dawn✔ RFA✔
+    (...private stations didn't get their own article until Sep ’23... Axiom was covered a bit in the ISS article but that was very
+    thin in 2021, and not much thicker in 2022)
+(by Aug 2022:  name change to Rockets of Today, so nocomm stuff might be recent here?  ...nah, I’m confident some of those are much older.)
+Added before Dec 4, 2022:  none  (kinetica got a separate article only in 2026, though the index entry appears here for the solid-fuel one)
+Added before Mar 29, 2023:
+    LandSpace (I think)✔ Spectrum✔ Tianlong✔
+Added before Sep 25, 2023:     (aside from new entries in old articles, e.g. Vast and Voyager stations)
+    Axiom-etc (I decided previous content within the ISS article was too thin to count)✔
+Added before Feb 24, 2024:
+    Nova✔
+Added before Jul 16, 2024:
+    Kairos✔
+Added before Oct 14, 2024:  none
+Added before Dec 13, 2024:
+    Eris✔
+Added before Jun 13, 2025:  none           --- earliest Tigertech backup seen is Feb 2, 2025
+Added before Aug 17, 2025:
+    Blue-Moon✔
+Added before Nov 30, 2025
+    Skyrora✔ SpinLaunch✔
+Added before Feb 11, 2026:                 --- my local version-control repo started on Feb 4, 2026
+    Hanbit✔ Kinetica✔ (wait, this is not in the repo on Apr 25! launch was Mar 30)
+Added after that:  none
+---------------- Dammit I forgot the root pages want publication dates too:
+    alphabetic✔ intro✔ legend✔ {upcoming✔} old✔ middle✔ revival✔ boom (12/5/22-3/29/23)✔ cancelled (later?)✔ future✔
+    compare✔ spacecraft (later)✔ stations (later)✔ spaceports (3/30/23-9/25/23)✔ timeline (7/13/25-2/11/26)✔ forecasts (later?)✔
+
 
             -- content:
 Go through old rockets and find the ones with insufficient significant figures, and maybe check some accuracies.
@@ -15,23 +78,24 @@ Add Space Epoch's half-scale Starship?  Other new China companies?
 Move Qaem and other new Iranian to a separate article from Unha?
 Watch out always for rockets well enough defined to get their own new sections.
 See compare.html-content for todo on the size picture.
+--- The presence of [TEST] in a comment means this line differs from the production version.
 */
 
 $rootM = '/rockets';                // our server-side root folder — no trailing slash
-$rootA = '/rockets/index-test.php'; // client-side virtual root page — make this the same as $rootM if we are the DirectoryIndex in .htaccess
+$rootA = '/rockets/index-test.php'; // [TEST] client-side virtual root page — make this the same as $rootM if we are the DirectoryIndex in .htaccess
 $rootU = 'https://paulkienitz.net/rockets/';    // the client-side URL that all of our content starts from
 $warning = ' [test]';
-$commentSystem = 'inline';          // 'inline' for Commentics ('iframe' not implemented), 'hash' for Hashover (lame), 'none' for no comments
+$commentSystem = 'inline';          // 'inline' for Commentics ('iframe' not implemented), 'hash' for Hashover (lame) [TEST], 'none' for no comments
 $cmtx_folder = '/commentix/';
-//$hashover_folder = '/hashover--zzz/';
+//$hashover_folder = '/hashover--2-next/';      // [TEST]
 
-$log = '';                  // in case I need serverside breadcrumbs for debugging
+$log = '';                  // [TEST] in case I need serverside breadcrumbs for debugging
 
 $addIntro = false;
 $reqPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $pathParts = explode('/', $reqPath, 6);
 // We can assume up front that part 0 is always "" and part 1 is always "rockets".  We skip these.
-// Part 2 may be "index[-test].php"; if so, we skip that as well.
+// Part 2 may be "index[-test].php"; if so, we skip that as well.   [TEST]
 // We will use the next part for an era or a top-level section such as intro.
 // When that part is an era (including spacecraft or stations), the final part will be the optional individual article name.
 // That last part must be absent or empty if the part before is not an era.  No further parts should exist.
@@ -52,7 +116,7 @@ else
 if (!$mainSection)
 {
     $addIntro = true;
-    $mainSection = 'alphabetic-test';       // formerly 'intro' -- *** FORCE EXPLICIT REDIRECT to get test links?
+    $mainSection = 'alphabetic-test';       // [TEST] formerly 'intro' -- *** FORCE EXPLICIT REDIRECT to get test links?
 }
 // $log .= "\n*** mainSection '$mainSection', article '$article', remainder '$remainder'.";
 
@@ -61,7 +125,7 @@ if (!$mainSection)
    The eight (originally seven) single-letter path components are virtual folders, which originally
    mapped to just two physical ones, r/ and s/, but o, m, r, b, x, and f now map to ro/, rm/, rr/, rb/,
    rx/, and rf/ (but v and h still map to s/).  This gives each article a short clean url. */
-$sections = [['alphabetic-test', 'Alphabetical Index',              'Index'],
+$sections = [['alphabetic-test', 'Alphabetical Index',              'Index'],       // [TEST]
              ['intro',      'Introduction',                    'Intro'],
              ['legend',     'Stats and Specs Explained',       'Stats&amp;Specs'],
           /* ['upcoming',   'Upcoming Milestones',             'Upcoming'], */
@@ -166,21 +230,25 @@ function sectionServerPath($section)
     }
 }
 
-function sitemapXmlRecord($url, $template, $pri)
+function lastModTimeISO($path)
 {
-    $modtime = new DateTime('@' . filemtime($template));
+    $modtime = new DateTime('@' . filemtime($path));
     $modtime->setTimezone(new DateTimeZone('UTC'));
-    $timestamp = $modtime->format(DateTime::ATOM);
-    echo "<url>\n  <loc>$url</loc>\n  <lastmod>$timestamp</lastmod>\n" .
+    return $modtime->format(DateTime::ATOM);
+}
+
+function sitemapXmlRecord($url, $source, $pri)
+{
+    echo "<url>\n  <loc>$url</loc>\n  <lastmod>" . lastModTimeISO($source) . "</lastmod>\n" .
          "  <priority>$pri</priority>\n  <changefreq>monthly</changefreq>\n</url>\n";
 }
 
 
 $eraToUse = null;
+$articleBase = substr($article, -5) !== '-test' ? $article : substr($article, 0, -5);    // [TEST]
 if (!$show404)
 {
     $eraToUse = eraToUse($mainSection);
-    $articleBase = substr($article, -5) !== '-test' ? $article : substr($article, 0, -5);    // extra logic for testing
     $show404 = $article && (!$eraToUse || !in_array($articleBase, array_keys($eraToUse), true));
     // if ($articleBase !== $article) $log .= "\n*** articleBase '$articleBase' — " . ($show404 ? 'not found' : 'found');
     // if ($eraToUse) $log .= "\n*** size of eraToUse is " . count($eraToUse);
@@ -266,7 +334,7 @@ else
         $canonical = $rootU . $mainSection . '/' . $articleBase;
     } else {
         $pageTitle = $sections[$sectionNumber][1];
-        if ($mainSection == 'alphabetic' || $mainSection == 'alphabetic-test')
+        if ($mainSection == 'alphabetic' || $mainSection == 'alphabetic-test')      // [TEST]
             $canonical = $rootU;
         else
             $canonical = $rootU . $mainSection;
@@ -317,7 +385,7 @@ $filterClasses = ['o/soyuz'         => 'rus medium astro cryo gov commz spend po
                   'b/spectrum'      => 'germany light sat cryo comm spend rare',
                   'b/eris'          => 'australia light sat solid comm spend rare',
                   'b/hanbit'        => 'southkorea light sat solid comm spend rare',
-				  'b/kinetica'      => 'china light medium sat cryo comm spend rare',
+                  'b/kinetica'      => 'china light medium sat cryo comm spend rare',
                   'x/vector'        => 'usa light sat cryo comm spend rare',
                   'x/phantomx'      => 'usa light sat cryo gov nocomm reuse rare',
                   'x/omega'         => 'usa medium heavy sat solid comm spend rare',
@@ -517,7 +585,8 @@ else
     </div>
 </NAV>
 
-<NAV class="popupParent erae">
+<div itemscope itemtype="https://schema.org/BreadcrumbList">
+  <NAV class="popupParent erae">
     <!-- era selector -->
 <?php
         $sc = count($sections);
@@ -538,66 +607,84 @@ else
     </span>
     <div id=mainSectionPopup class="inputPopup center20" style="display: none">
 <?php
-            foreach ($sections as $sec)   // section names form menu items in the dropdown
-            {
-                $name = $sec[1];
-                if (eraToUse($sec[0]))
-                    $name = strtoupper($name) . " »";
-                echo("        <div class=menuItem><a href='$rootA/$sec[0]'>$name</a></div>\n");
-            }
+        foreach ($sections as $num => $sec)   // section names form menu items in the dropdown
+        {
+            $path = $num == 0 ? '' : $sec[0];
+            $name = $sec[1];
+            if (eraToUse($sec[0]))
+                $name = strtoupper($name) . " »";
+            $level = $num == 0 ? 1 : 2;
+            if ($num == 0 || $num == $sectionNumber)
+                echo("        <div class=menuItem itemprop=itemListElement itemscope itemtype='https://schema.org/ListItem'>" .
+                             "<meta itemprop=position content='$level'><meta itemprop=name content='$sec[1]'>" .
+                             "<a href='$rootA/$path' itemprop=item>$name</a></div>\n");
+            else
+                echo("        <div class=menuItem><a href='$rootA/$path'>$name</a></div>\n");
+        }
 ?>
     </div>
-</NAV>
+  </NAV>
 
 <?php
         if ($eraToUse)
         {
+            $itemy = $article ? " itemprop=itemListElement itemscope itemtype='https://schema.org/ListItem'" : '';
             // Tabs!  These are the links to the individual articles within the era.
-            echo("<NAV class='subtabby bigimage'><div><div id=tabset>&ensp;  <!-- for eras which have tabs for individual articles -->\n");
+            echo("  <NAV class='subtabby bigimage'>  <!-- for eras which have tabs for individual articles -->\n    <div$itemy><div id=tabset>&ensp;\n");
             foreach ($eraToUse as $item => $name)
             {
                 $articlePath = $mainSection . '/' . $item;
-                $sel = $item == $article ? ' selectedtab' : '';
-                $filter = $articlePath ? $filterClasses[$articlePath] ?? null : null;
-                echo("    <a class='articletab$sel $filter' href='$rootA/$articlePath'>$name</a>\n");
+                $sel = $item == $articleBase ? ' selectedtab' : '';
+                $itemy = $sel != '' && $item != '' ? " itemprop=item" : '';
+                if ($itemy)
+                    echo("        <meta itemprop=position content='3'><meta itemprop=name content='$name'>\n");
+                $filter = $article ? $filterClasses[$articlePath] ?? null : null;
+                echo("        <a class='articletab$sel $filter'$itemy href='$rootA/$articlePath'>$name</a>\n");
             }
-            echo("<span class=tabrejects>[<span id=rejectcount>0</span> hidden]</span>\n");
-            // The ensp's are for an old Firefox bug that didn't use all of the padding on the right of this scrollable region.
+            echo("        <span class=tabrejects>[<span id=rejectcount>0</span> hidden]</span>&ensp;\n");
+            // That ensp is for an old Firefox bug that didn't use all of the padding on the right of this scrollable region.
             // Even with actual content there instead of padding, it still allocates less space there than on the left,
             // but it's closer to symmetrical, so this partially mitigates the bug.  In Chrome it's symmetrical either way.
-            echo("\n&ensp;</div></div></NAV>\n");
+            echo("    </div></div>\n  </NAV>\n");
         } /* $eraToUse */
+?>
+</div>
+<?php
     } /* !$show404 */
 ?>
 
 <!-- ======================== SUBSTANTIVE NON-NAVIGATIONAL CONTENT GOES HERE: -->
-<MAIN id=mainContent>
+<MAIN id=mainContent itemscope itemtype="https://schema.org/Article">
+    <div style="display: none" itemprop=author itemscope itemtype="https://schema.org/Person"><meta itemprop=name content="Paul Kienitz"><meta itemprop=url content="https://paulkienitz.net/"></div>
+
 <?php
     if ($show404)
     {
-        echo("<h1 style='color: #660000; font-family: initial;'>404 Not Found</h1>\n<p>");
-        echo(htmlspecialchars($reqPath));
-        echo(" is not the URL of an article on this site.</p>\n");
-        echo("<p><a href='$rootA'>Here is the index of content.</a></p>\n");
+        echo("    <h1 style='color: #660000; font-family: initial;'>404 Not Found</h1>\n");
+        echo("    <p>" . htmlspecialchars($reqPath) . " is not the URL of an article on this site.</p>\n");
+        echo("    <p><a href='$rootA'>Here is the index of content.</a></p>\n");
     }
     else if ($article)
     {
+        echo("    <meta itemprop=dateModified content='" . lastModTimeISO($articleFolder . $article . '.html-content') . "'>\n");
         require $articleFolder . $article . '.html-content';
         $cmtx_identifier = $mainSection . '/' . $article;
         if ($commentSystem === 'inline')
         {
             $cmtx_reference = $pageTitle;
-            echo "<div class=commentation>";
+            echo "    <div class=commentation>";
             require($_SERVER['DOCUMENT_ROOT'] . $cmtx_folder . 'frontend/index.php');
-            echo '<div class=termination><a href="#" data-cmtx-target-modal="#cmtx_terms_modal">terms and conditions for commenters</a>';
+            echo '        <div class=termination><a href="#" data-cmtx-target-modal="#cmtx_terms_modal">terms and conditions for commenters</a>';
             echo '&emsp;|&emsp;<a href="#" data-cmtx-target-modal="#cmtx_privacy_modal">privacy policy</a></div>';
-            echo "\n</div>\n";
+            echo "\n    </div>\n";
         }
-//        else if ($commentSystem === 'hash')
-//            echo "<div class=commentation><div id=hashover></div></div>";
+//        else if ($commentSystem === 'hash')                                   // [TEST]
+//            echo "    <div class=commentation><div id=hashover></div></div>";
     }
     else
     {
+        echo("    <meta itemprop=dateModified content='" . lastModTimeISO(sectionServerPath($mainSection)) . "' />\n");
+		echo("    <meta itemprop=headline content='" . $sections[$sectionNumber][1] . "' />\n");
         if ($addIntro)
         {
             echo('<p class=narrowp>
@@ -609,7 +696,7 @@ and <a href="legend">Stats &amp; Specs</a> pages for further explanation.&ensp;I
 was formerly titled “Commercial Rockets”.
 </p><p class=narrowp>
 <i>New feature!</i>&ensp;The individual rocket articles now let you respond with
-comments, like you would on a blog post.&ensp;Please be courteous to other visitors.
+comments, like you would on a blog post.&ensp;Keep comments civil.
 </p>
 ');
         }
