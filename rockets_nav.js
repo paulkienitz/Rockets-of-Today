@@ -143,6 +143,7 @@ function selectTab(newtab)
         {
             sectioname.style.display = 'inline';
             rocketname.style.display = 'none';
+            filtrate(true);                         // update freshly-displayed rocket list
         }
         else
         {
@@ -258,7 +259,7 @@ function initPopups()
 
     titlel = document.getElementById("mainSeparateHeader") || document.querySelector("h2.rocket");
     topstripe = document.getElementById("topstripe");
-    clientlog = document.getElementById("clientlog");
+    //clientlog = document.getElementById("clientlog");
 }
 
 window.addEventListener("DOMContentLoaded", initPopups);
@@ -266,22 +267,22 @@ window.addEventListener("DOMContentLoaded", initPopups);
 
 // And let's show and hide the mini title stripe.
 
-var titlel, topstripe, clientlog;
+var titlel, topstripe;  //, clientlog;
 
-function log(m)
-{
-    if (clientlog && m)
-        clientlog.innerHTML += m + "\n";
-}
+//function log(m)           // this piggybacks on the output area used in the test page for PHP serverside log content
+//{
+//    if (clientlog && m)
+//        clientlog.innerHTML += m + "\n";
+//}
 
 function scrollHandler(e)
 {
-    // throttle this check with some kind of setTimer hack?
+    if (!titlel)
+        titlel = document.getElementById("mainSeparateHeader") || document.querySelector("h2.rocket");
     if (titlel && topstripe) {
         var re = titlel.getBoundingClientRect();
         var up = re.top < 0 && re.bottom < -0.5 * re.top;
-        // log("bottom at " + re.bottom + " so it " + (up ? "IS" : "is NOT") + " up.");
-        // #### XXX THIS WAS FAST TOGGLING in Ffox/A! (Chrome ok)... but adding log() cured it?
+        // console.log("bottom at " + re.bottom + " so it " + (up ? "IS" : "is NOT") + " up.");
         if (up && topstripe.style.visibility === "hidden")
             topstripe.style.visibility = "visible", topstripe.style.top = "0";
         else if (!up && topstripe.style.visibility === "visible")
@@ -289,6 +290,6 @@ function scrollHandler(e)
     }       // those have timed transitions in CSS
 }
 
-window.addEventListener("scroll", scrollHandler);   // no scrollend event in Safari or Opera yet
+window.addEventListener("scroll", scrollHandler);   // TODO: scrollend event has recently come to Safari and Opera
 window.addEventListener("load", scrollHandler);     // don't wait for a user input to get it right
 

@@ -1,14 +1,23 @@
 <?php
 /*  TODO:   -- logic:
-******************  GOVT EXCLUSIVE FILTER IS BUSTED, it is including commercialized government.
-**BUG**  Tabbing to overview did not update "current filter" list to reflect filter change.
-(already saw)  Filter list on section intro pages sometimes initiates out of sync with the current filters?  Can't reproduce.
 Add formerly-popular filter category?  Maybe someday.  Or decommission the whole filter feature?
 Reorganize .css file, and merge in local inline styles.  Remove .gov class?
-BUG: Firefox sometimes doesn't load images after simulateNavigation -- XHR handled cache incorrectly.
+BUG?  Firefox sometimes doesn't load images after simulateNavigation -- XHR handled cache incorrectly.
 ...See if spare 5 mitigates that bug (it probably should have no effect... but I haven't seen the bug in some time):
+BUG?  Govt exclusive filter was busted, it was including commercialized government.  CAN'T REPRODUCE.
 
-**********************
+            -- content:
+Go through old rockets and find the ones with insufficient significant figures, and maybe check some accuracies.
+Update Ariane 6 stages, and LM 6A stages when possible.  Add stages for Starship when possible.
+Flown rockets with no pics: START, Rokot, Epsilon, some Chinese solids, SSLV, Kairos, Spectrum, Eris, Hanbit.  Let's leave most of them be.
+Add Space Epoch's half-scale Starship?  Other new China companies?
+Move Qaem and other new Iranian to a separate article from Unha?
+Watch out always for rockets well enough defined to get their own new sections.
+See compare.html-content for todo on the size picture.
+*/
+
+/*  ATTEMPT TO RECONSTRUCT the ages of existing articles:
+    -----------------------------------------------------
 ARTICLES PRESENT in Sep 2021 (earliest definite record we have):
     Alpha Angara/Amur Antares Ariane Astra Atlas Bloostar Blue-Whale [cargo]
     [china-solids] Delta Dragon-2 Dream-Chaser Electron Epsilon Falcon
@@ -68,19 +77,9 @@ Added after that:  none
 ---------------- Dammit I forgot the root pages want publication dates too:
     alphabetic✔ intro✔ legend✔ {upcoming✔} old✔ middle✔ revival✔ boom (12/5/22-3/29/23)✔ cancelled (later?)✔ future✔
     compare✔ spacecraft (later)✔ stations (later)✔ spaceports (3/30/23-9/25/23)✔ timeline (7/13/25-2/11/26)✔ forecasts (later?)✔
-
-
-            -- content:
-Go through old rockets and find the ones with insufficient significant figures, and maybe check some accuracies.
-Update Ariane 6 stages, and LM 6A stages when possible.  Add stages for Starship when possible.
-Flown rockets with no pics: START, Rokot, Epsilon, some Chinese solids, SSLV, Kairos, Spectrum, Eris, Hanbit.  Let's leave most of them be.
-Add Space Epoch's half-scale Starship?  Other new China companies?
-Move Qaem and other new Iranian to a separate article from Unha?
-Watch out always for rockets well enough defined to get their own new sections.
-See compare.html-content for todo on the size picture.
---- The presence of [TEST] in a comment means this line differs from the production version.
 */
 
+// The presence of [TEST] in a comment means this line differs from the production version.
 $rootM = '/rockets';                // our server-side root folder — no trailing slash
 $rootA = '/rockets/index-test.php'; // [TEST] client-side virtual root page — make this the same as $rootM if we are the DirectoryIndex in .htaccess
 $rootU = 'https://paulkienitz.net/rockets/';    // the client-side URL that all of our content starts from
@@ -172,7 +171,7 @@ $eraBoom      = ['' => 'Overview', 'electron' => 'Electron', 'alpha' => 'Alpha',
                  'vulcan' => 'Vulcan', 'newglenn' => 'New Glenn',
                  // Those have shown they can orbit; now here are the ones that have launched but not orbited yet:
                  'spectrum' => 'Spectrum', 'kinetica' => 'Lijian/Kinetica', 'kairos' => 'Kairos',
-                 'eris' => 'Eris', 'hanbit' => 'Hanbit'];
+                 'eris' => 'Eris', 'hanbit' => 'Hanbit', 'vikram'=> 'Vikram' ];
 $eraCancelled = ['' => 'Overview', 'vector' => 'Vector', 'phantomx' => 'Phantom Express',
                  'omega' => 'OmegA', 'launcherone' => 'LauncherOne', 'astra' => 'Astra',
                  'skylon' => 'Skylon', 'rs1' => 'RS1', 'prime' => 'Prime',  // now the ones not officially cancelled:
@@ -386,6 +385,7 @@ $filterClasses = ['o/soyuz'         => 'rus medium astro cryo gov commz spend po
                   'b/eris'          => 'australia light sat solid comm spend rare',
                   'b/hanbit'        => 'southkorea light sat solid comm spend rare',
                   'b/kinetica'      => 'china light medium sat cryo comm spend rare',
+                  'b/vikram'        => 'india light sat solid comm spend rare',
                   'x/vector'        => 'usa light sat cryo comm spend rare',
                   'x/phantomx'      => 'usa light sat cryo gov nocomm reuse rare',
                   'x/omega'         => 'usa medium heavy sat solid comm spend rare',
@@ -638,7 +638,7 @@ else
                 $itemy = $sel != '' && $item != '' ? " itemprop=item" : '';
                 if ($itemy)
                     echo("        <meta itemprop=position content='3'><meta itemprop=name content='$name'>\n");
-                $filter = $article ? $filterClasses[$articlePath] ?? null : null;
+                $filter = $item ? $filterClasses[$articlePath] ?? null : null;
                 echo("        <a class='articletab$sel $filter'$itemy href='$rootA/$articlePath'>$name</a>\n");
             }
             echo("        <span class=tabrejects>[<span id=rejectcount>0</span> hidden]</span>&ensp;\n");

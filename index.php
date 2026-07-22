@@ -1,12 +1,10 @@
 <?php
 /*  TODO:   -- logic:
-******************  GOVT EXCLUSIVE FILTER IS BUSTED, it is including commercialized government.
-**BUG**  Tabbing to overview did not update "current filter" list to reflect filter change.
-(already saw)  Filter list on section intro pages sometimes initiates out of sync with the current filters?  Can't reproduce.
 Add formerly-popular filter category?  Maybe someday.  Or decommission the whole filter feature?
 Reorganize .css file, and merge in local inline styles.  Remove .gov class?
 BUG: Firefox sometimes doesn't load images after simulateNavigation -- XHR handled cache incorrectly.
 ...See if spare 5 mitigates that bug (it probably should have no effect... but I haven't seen the bug in some time):
+BUG?  Govt exclusive filter was busted, it was including commercialized government.  CAN'T REPRODUCE.
 
             -- content:
 Go through old rockets and find the ones with insufficient significant figures, and maybe check some accuracies.
@@ -108,7 +106,7 @@ $eraBoom      = ['' => 'Overview', 'electron' => 'Electron', 'alpha' => 'Alpha',
                  'vulcan' => 'Vulcan', 'newglenn' => 'New Glenn',
                  // Those have shown they can orbit; now here are the ones that have launched but not orbited yet:
                  'spectrum' => 'Spectrum', 'kinetica' => 'Lijian/Kinetica', 'kairos' => 'Kairos',
-                 'eris' => 'Eris', 'hanbit' => 'Hanbit'];
+                 'eris' => 'Eris', 'hanbit' => 'Hanbit', 'vikram'=> 'Vikram' ];
 $eraCancelled = ['' => 'Overview', 'vector' => 'Vector', 'phantomx' => 'Phantom Express',
                  'omega' => 'OmegA', 'launcherone' => 'LauncherOne', 'astra' => 'Astra',
                  'skylon' => 'Skylon', 'rs1' => 'RS1', 'prime' => 'Prime',  // now the ones not officially cancelled:
@@ -181,7 +179,7 @@ function sitemapXmlRecord($url, $source, $pri)
 
 
 $eraToUse = null;
-$articleBase = $article;					// in test versions this may not be so simple
+$articleBase = $article;					// in test versions this is not so simple
 if (!$show404)
 {
     $eraToUse = eraToUse($mainSection);
@@ -322,6 +320,7 @@ $filterClasses = ['o/soyuz'         => 'rus medium astro cryo gov commz spend po
                   'b/eris'          => 'australia light sat solid comm spend rare',
                   'b/hanbit'        => 'southkorea light sat solid comm spend rare',
                   'b/kinetica'      => 'china light medium sat cryo comm spend rare',
+                  'b/vikram'        => 'india light sat solid comm spend rare',
                   'x/vector'        => 'usa light sat cryo comm spend rare',
                   'x/phantomx'      => 'usa light sat cryo gov nocomm reuse rare',
                   'x/omega'         => 'usa medium heavy sat solid comm spend rare',
@@ -574,7 +573,7 @@ else
                 $itemy = $sel != '' && $item != '' ? " itemprop=item" : '';
                 if ($itemy)
                     echo("        <meta itemprop=position content='3'><meta itemprop=name content='$name'>\n");
-                $filter = $article ? $filterClasses[$articlePath] ?? null : null;
+                $filter = $item ? $filterClasses[$articlePath] ?? null : null;
                 echo("        <a class='articletab$sel $filter'$itemy href='$rootA/$articlePath'>$name</a>\n");
             }
             echo("        <span class=tabrejects>[<span id=rejectcount>0</span> hidden]</span>&ensp;\n");
