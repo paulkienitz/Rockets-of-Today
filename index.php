@@ -420,8 +420,7 @@ if (!$redirection && $mainSection !== 'sitemap.txt')
 ?>
     <link rel='canonical' href='<?=$canonical?>' />
     <script src='<?=$rootM?>/rockets.js'></script>
-    <script src='<?=$rootM?>/spare05X_single2.js'></script>
-    <script src='<?=$rootM?>/rockets_nav.js'></script>
+    <script type=module src='<?=$rootM?>/rockets_navmod.js'></script>
 <?php
     // if we were to use hashover, we'd pull in its comments.css and comments.js here
     }

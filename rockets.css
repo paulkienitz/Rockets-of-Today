@@ -827,6 +827,9 @@ h3.cmtx_comments_heading, h3.cmtx_form_heading {
     margin: 0 0 1em 3em;
     font-style: italic;
 }
+.ports tr.inactive td {
+    color: #777777;
+}
 .ports table {
     width: 100%;
 }

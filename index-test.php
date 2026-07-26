@@ -3,7 +3,7 @@
 Add formerly-popular filter category?  Maybe someday.  Or decommission the whole filter feature?
 Reorganize .css file, and merge in local inline styles.  Remove .gov class?
 BUG?  Firefox sometimes doesn't load images after simulateNavigation -- XHR handled cache incorrectly.
-...See if spare 5 mitigates that bug (it probably should have no effect... but I haven't seen the bug in some time):
+...See if spare 5 mitigates that bug (it probably makes no difference... but I haven't seen the bug in some time).
 BUG?  Govt exclusive filter was busted, it was including commercialized government.  CAN'T REPRODUCE.
 
             -- content:
@@ -485,8 +485,7 @@ if (!$redirection && $mainSection !== 'sitemap.txt')
 ?>
     <link rel='canonical' href='<?=$canonical?>' />
     <script src='<?=$rootM?>/rockets.js'></script>
-    <script src='<?=$rootM?>/spare05X_single2.js'></script>
-    <script src='<?=$rootM?>/rockets_nav.js'></script>
+    <script type=module src='<?=$rootM?>/rockets_navmod.js'></script>
 <?php
     // if we were to use hashover, we'd pull in its comments.css and comments.js here
     }

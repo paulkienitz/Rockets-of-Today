@@ -111,10 +111,9 @@ function filtrate(doNotSetCookie)
     // remember the checkbox state
     if (!doNotSetCookie)
         document.cookie = "filter=" + encodeFilters() + "; SameSite=strict; Path=/";
-    // displayFilters is defined only for the new format, in rockets_nav.js
-    if (typeof displayFilters == "function")
-        displayFilters();   // TODO: use an event instead
-    // window.dispatchEvent(filtersChanged);
+    // FiltersChanged event is handled only for the new format, in rockets_navmod.js
+    var filtersChanged = new Event("FiltersChanged");
+    document.dispatchEvent(filtersChanged);
 }
 
 // This must accurately model the form's grouping of checkboxes, so

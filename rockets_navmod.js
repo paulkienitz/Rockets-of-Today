@@ -1,7 +1,9 @@
 // The script rockets.js defines stuff used by both the old tall format and the
 // new navigable format.  This supplements it by defining things which are used
-// only in the new format.  Uses SPARE (https://github.com/paulkienitz/SPARE).
-// We stuck to ECMAScript 3 originally.  Nowadays 6 should be perfectly safe.
+// only in the new format.  Uses SPARE 5 (https://github.com/paulkienitz/SPARE).
+// This script is now a module.  It exports nothing, it only responds to events.
+
+import {SPARE} from "./spare05X.js";
 
 
 // First, enhanced functionality for the filter form.
@@ -44,7 +46,7 @@ function displayFilters()   // invoked by filtrate
     for (var set in filtersets)
     {
         var description = describeFilter(set);
-        if (description)
+        if (description)    // todo: give this an ID so addEventListener can be used?
             newlist += "&ensp;<span class=activefilter>" + description +
                        "<button onclick='clearFilterSet(this, true)' value=" + set +
                        ">×</button></span>";
@@ -54,6 +56,8 @@ function displayFilters()   // invoked by filtrate
     countHiddenTabs();
 }
 
+document.addEventListener("FiltersChanged", displayFilters);        // dispatched by filtrate() in rockets.js
+
 function clearFilterSet(button, check)
 {
     var names = filtersets[button.value];
@@ -62,13 +66,15 @@ function clearFilterSet(button, check)
     filtrate(false);
 }
 
-function clearAllFilters()
-{
-    for (var fs in filtersets)
-        for (var ch in filtersets[fs])
-            SetCheck(filtersets[fs][ch], true);
-    filtrate(false);
-}
+window.clearFilterSet = clearFilterSet;
+
+//function clearAllFilters()          // not currently used
+//{
+//    for (var fs in filtersets)
+//        for (var ch in filtersets[fs])
+//            SetCheck(filtersets[fs][ch], true);
+//    filtrate(false);
+//}
 
 // This must run before the DOMContentLoaded event:
 if (!(/(^|;\s*)filter=([^;]*)/.test(document.cookie)))
@@ -96,7 +102,7 @@ function applyFilterClassesToIndex()
         filtrate(true);
 }
 
-window.addEventListener("DOMContentLoaded", applyFilterClassesToIndex);
+document.addEventListener("DOMContentLoaded", applyFilterClassesToIndex);
 
 // ----------
 // Let's make a horizontally scrolling row of tabs which loads content with SPARE.
@@ -255,14 +261,15 @@ function initPopups()
     window.addEventListener("click", popupHandler);     // attaching to body doesn't cover page margins
     initSpar();
     var topper = document.getElementById("topper");
-    if (topper) topper.addEventListener("click", function () { window.scrollTo(0, 0); });
+    if (topper)
+        topper.addEventListener("click", function () { window.scrollTo(0, 0); });
 
     titlel = document.getElementById("mainSeparateHeader") || document.querySelector("h2.rocket");
     topstripe = document.getElementById("topstripe");
     //clientlog = document.getElementById("clientlog");
 }
 
-window.addEventListener("DOMContentLoaded", initPopups);
+document.addEventListener("DOMContentLoaded", initPopups);
 
 
 // And let's show and hide the mini title stripe.
